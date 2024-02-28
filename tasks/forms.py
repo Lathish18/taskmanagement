@@ -11,8 +11,8 @@ class UserForm(UserCreationForm):
 class TaskForm(forms.ModelForm):
     class Meta:
         model = Tasks
-        exclude = ['status']
-        fields = ['name', 'assign_to', 'priority', 'deadline', 'remarks']
+        exclude = ['status', 'assign_to']
+        fields = ['name', 'priority', 'deadline', 'remarks']
         widgets = {
             'deadline': forms.DateInput(attrs={'type': 'date'}),
         }
@@ -20,4 +20,4 @@ class TaskForm(forms.ModelForm):
 class UpdateTaskForm(forms.ModelForm):
     class Meta:
         model = Tasks
-        fields = ['name', 'assign_to', 'status', 'priority', 'deadline', 'remarks']
+        fields = ['name', 'status', 'priority', 'deadline', 'remarks']

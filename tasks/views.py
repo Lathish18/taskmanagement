@@ -4,7 +4,6 @@ from .models import Tasks, UserDetail
 from .forms import TaskForm , UserForm, UpdateTaskForm
 from django.contrib.auth import  login as auth_login,logout as auth_logout
 from django.contrib.auth.forms import AuthenticationForm
-from django.utils import timezone
 
 
 def register(request):
@@ -46,6 +45,7 @@ def add_task(request):
         if form.is_valid():
             task = form.save(commit=False)
             task.user = request.user
+            task.assign_to = request.user
             task.save()
             return redirect('task_list')
     else:

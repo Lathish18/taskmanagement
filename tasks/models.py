@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib import admin
 from django.utils import timezone
 from django.contrib.postgres.fields import JSONField
 import pytz
@@ -12,24 +13,18 @@ class Tasks(models.Model):
         ('Dropped', 'Dropped'),
         ('Completed', 'Completed'),
     ]
-    users = [
-        ('student 1', 'student 1'),
-        ('student 2', 'student 2'),
-        ('student 3', 'student 3'),
-        ('student 4', 'student 4'),
-        ('student 5', 'student 5'),
-    ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=100,default="Task Name")
-    assign_to = models.CharField(max_length=100, choices=users)
-    status = models.CharField(max_length=20, default='Not Started',choices=statuses)
+    name = models.CharField(max_length=100, default="Task Name")
+    assign_to = models.ForeignKey(User, on_delete=models.CASCADE, related_name='assigned_tasks')
+    status = models.CharField(max_length=20, default='Not Started', choices=statuses)
     priority = models.CharField(max_length=20)
     deadline = models.DateField()
     remarks = models.CharField(max_length=100, default='Task not started yet')
     last_updated = models.DateTimeField(auto_now=True)
 
     update_history = models.JSONField(default=list)
+
     def add_update_history(self, user, updated_fields):
         relevant_fields = {'status', 'remarks'}
         filtered_updates = {field: (getattr(self, field), updated_fields[field]) for field in relevant_fields if field in updated_fields}
@@ -45,6 +40,12 @@ class Tasks(models.Model):
             }
             self.update_history.append(update_entry)
             self.save()
+
+class TasksAdmin(admin.ModelAdmin):
+    list_display = ('name', 'user', 'assign_to', 'status', 'priority', 'deadline', 'remarks', 'last_updated')
+    list_filter = ('status', 'priority', 'deadline', 'user', 'assign_to')
+    exclude = ('update_history',)
+
 
 class UserDetail(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

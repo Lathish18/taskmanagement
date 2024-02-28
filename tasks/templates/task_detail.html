@@ -65,7 +65,6 @@
         <h2>{{ task.name }} Details</h2>
         <p><strong>Deadline:</strong> {{ task.deadline }}</p>
         <p><strong>Priority:</strong> {{ task.priority }}</p>
-        <p><strong>Assigned_to:</strong> {{ task.assign_to }}</p>
         <p><strong>Status:</strong> {{ task.status }}</p>
         <p><strong>Remarks:</strong> {{ task.remarks }}</p><br>
 
@@ -73,7 +72,7 @@
         <ul>
           {% for update_entry in task.update_history|dictsortreversed:"timestamp" %}
             <li>
-                 Updated on {{ update_entry.timestamp }}:
+                Updated on {{ update_entry.timestamp }}:
               {% for field, values in update_entry.updated_fields.items %}
                 {{ field }} from {{ values.to.from }} to {{ values.from }};
               {% endfor %}
